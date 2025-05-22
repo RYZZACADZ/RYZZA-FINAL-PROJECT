@@ -67,10 +67,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'skbulletin.wsgi.application'
 
 # Database
+# Create data directory if it doesn't exist
+data_dir = BASE_DIR / 'data'
+data_dir.mkdir(exist_ok=True)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'data/db.sqlite3',  # Updated to use persistent directory
+        'NAME': data_dir / 'db.sqlite3',
     }
 }
 
