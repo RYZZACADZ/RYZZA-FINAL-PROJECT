@@ -16,22 +16,20 @@ mkdir -p media
 mkdir -p data
 mkdir -p staticfiles
 
-# Move to a persistent directory if it doesn't exist
-if [ ! -f "data/db.sqlite3" ]; then
-    python manage.py migrate --no-input
-    python manage.py shell << END
+# Always run migrations
+python manage.py migrate --no-input
+
+# Create superuser if it doesn't exist
+python manage.py shell << END
 from django.contrib.auth.models import User
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
 END
-    # Move the database to the persistent directory
-    mv db.sqlite3 data/db.sqlite3
-fi
 
 # Collect static files
-python manage.py collectstatic --no-input
+python manage.py collectstatic --no-input --clear
 
-# Ensure media directory permissions
+# Ensure proper permissions
 chmod -R 755 media
 chmod -R 755 data
 chmod -R 755 staticfiles
