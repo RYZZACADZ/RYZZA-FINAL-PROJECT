@@ -11,15 +11,17 @@ pip install -r requirements.txt
 # Navigate to the project directory
 cd skbulletin
 
-# Create necessary directories
-mkdir -p media
-mkdir -p data
-mkdir -p staticfiles
+# Create necessary directories with proper permissions
+mkdir -p media static data staticfiles
+chmod -R 755 media static data staticfiles
 
-# Always run migrations
-python manage.py migrate --no-input
+# Run database migrations
+echo "Running database migrations..."
+python manage.py makemigrations bulletin
+python manage.py migrate
 
 # Create superuser if it doesn't exist
+echo "Creating superuser..."
 python manage.py shell << END
 from django.contrib.auth.models import User
 if not User.objects.filter(username='admin').exists():
@@ -27,12 +29,16 @@ if not User.objects.filter(username='admin').exists():
 END
 
 # Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --no-input --clear
 
-# Ensure proper permissions
-chmod -R 755 media
-chmod -R 755 data
-chmod -R 755 staticfiles
+# Verify database tables
+echo "Verifying database tables..."
+python manage.py shell << END
+from django.db import connection
+tables = connection.introspection.table_names()
+print("Available tables:", tables)
+END
 
 # Create superuser if needed (uncomment and set env vars to use)
 # python manage.py createsuperuser --no-input --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL 

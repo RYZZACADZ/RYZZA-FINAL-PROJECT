@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bulletin',
+    'bulletin.apps.BulletinConfig',  # Use the full application configuration
     'rest_framework',
     'widget_tweaks',
     'crispy_forms',
@@ -59,6 +59,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'django.template.context_processors.static',
             ],
         },
     },
@@ -109,6 +110,9 @@ STATICFILES_DIRS = [
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 # Media files
 MEDIA_URL = '/media/'
@@ -117,6 +121,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Configure WhiteNoise to serve media files in production
 if not DEBUG:
     WHITENOISE_ROOT = MEDIA_ROOT
+    WHITENOISE_INDEX_FILE = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -132,10 +137,12 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
         },
         'file': {
             'class': 'logging.FileHandler',
             'filename': data_dir / 'django.log',
+            'level': 'DEBUG',
         },
     },
     'root': {
@@ -151,6 +158,11 @@ LOGGING = {
         'django.db.backends': {
             'handlers': ['console'],
             'level': 'ERROR',
+        },
+        'django.request': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     },
 }
