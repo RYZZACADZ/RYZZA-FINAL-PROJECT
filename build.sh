@@ -11,21 +11,24 @@ pip install -r requirements.txt
 # Navigate to the project directory
 cd skbulletin
 
-# Create media directory if it doesn't exist
+# Create necessary directories
 mkdir -p media
+mkdir -p data
 
-# Collect static files
-python manage.py collectstatic --no-input
-
-# Apply database migrations
-python manage.py migrate --no-input
-
-# Initialize database with basic data if needed
-python manage.py shell << END
+# Move to a persistent directory if it doesn't exist
+if [ ! -f "data/db.sqlite3" ]; then
+    python manage.py migrate --no-input
+    python manage.py shell << END
 from django.contrib.auth.models import User
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
 END
+    # Move the database to the persistent directory
+    mv db.sqlite3 data/db.sqlite3
+fi
+
+# Collect static files
+python manage.py collectstatic --no-input
 
 # Create superuser if needed (uncomment and set env vars to use)
 # python manage.py createsuperuser --no-input --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL 
