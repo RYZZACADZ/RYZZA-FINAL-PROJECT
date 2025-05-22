@@ -1,0 +1,225 @@
+{% extends "bulletin/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 50%, #f48fb1 100%);
+        min-height: 100vh;
+    }
+
+
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 960px;
+    }
+
+    h2.fw-bold.text-primarys {
+        color: #6a1b9a; /* soft purple */
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+    }
+
+    p.text-muted {
+        color: #eee;
+        font-size: 1.15rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 8px rgba(106, 27, 154, 0.7);
+    }
+
+    .bg-white, .bg-light {
+        background: rgba(255, 255, 255, 0.12) !important;
+        backdrop-filter: blur(12px);
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px rgba(106, 27, 154, 0.4);
+        border: 1px solid rgba(106, 27, 154, 0.5) !important;
+        color: #eee !important;
+        transition: background-color 0.3s ease;
+    }
+    .bg-white:hover, .bg-light:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 12px 40px rgba(106, 27, 154, 0.6);
+    }
+
+    .shadow-sm {
+        box-shadow: 0 4px 16px rgba(106, 27, 154, 0.25) !important;
+    }
+
+    .text-secondary {
+        color: #6a1b9a !important;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        color: #4b3869;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: none;
+    }
+    .form-control::placeholder {
+        color: #a996d1;
+        opacity: 1;
+    }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #d3a9f9;
+        color: #3f297e;
+        box-shadow: 0 0 12px #d3a9f9;
+        outline: none;
+        font-weight: 600;
+    }
+
+    .form-floating > label {
+        color: #6a1b9a;
+        font-weight: 600;
+        pointer-events: none;
+        transition: color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #a27de6;
+        border-color: #a27de6;
+        font-weight: 700;
+        box-shadow: 0 5px 15px rgba(162, 125, 230, 0.6);
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        letter-spacing: 0.05em;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #d3a9f9;
+        border-color: #d3a9f9;
+        box-shadow: 0 0 18px #d3a9f9;
+        color: #222;
+    }
+
+    .list-group-item {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        border-radius: 18px;
+        margin-bottom: 1rem;
+        color: #000000;
+        box-shadow: 0 6px 20px rgba(123, 25, 184, 0.438);
+        transition: background-color 0.3s ease;
+    }
+    .list-group-item:hover {
+        background: rgba(211, 169, 249, 0.25);
+        border-color: #d3a9f9;
+        color: #41196a;
+        cursor: default;
+    }
+
+    .list-group-item strong {
+        color: #6a1b9a ;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+    }
+
+    .badge.bg-primary {
+        background-color: #a27de6 !important;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+    .badge.bg-secondary {
+        background-color: #7b57b5 !important;
+        font-weight: 600;
+    }
+    .badge.bg-success {
+        background-color: #5b3b70 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .badge.bg-info {
+        background-color: #64b5f6 !important;
+        color: #222 !important;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primarys"><i class="bi bi-envelope-paper-fill me-2"></i>Get in Touch</h2>
+        <p class="text-muted fs-5">We’re here to listen. Contact your Sangguniang Kabataan for assistance, suggestions, or inquiries.</p>
+    </div>
+
+    <div class="row g-5 align-items-start">
+        <!-- Contact Form -->
+        <div class="col-lg-6">
+            <div class="p-5 bg-white rounded-4 shadow-sm border">
+                <h4 class="mb-4 text-secondary"><i class="bi bi-chat-dots-fill me-2"></i>Send a Message</h4>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required aria-required="true" value="{{ request.POST.name|default:'' }}">
+                        <label>Your Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Your Email" required aria-required="true" value="{{ request.POST.email|default:'' }}">
+                        <label>Your Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="phone" name="phone number" class="form-control" placeholder="Your Phone Number" required aria-required="true" value="{{ request.POST.phone|default:'' }}">
+                        <label>Your Phone Number</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea name="message" class="form-control" placeholder="Your Message" style="height: 160px;" required aria-required="true">{{ request.POST.message|default:'' }}</textarea>
+                        <label>Your Message</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 shadow-sm" aria-live="polite">
+                        <i class="bi bi-send-fill me-2"></i>Submit Message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SK Officials -->
+        <div class="col-lg-6">
+            <div class="p-5 bg-light rounded-4 shadow-sm border">
+                <h4 class="mb-4 text-secondary"><i class="bi bi-people-fill me-2"></i>SK Officials</h4>
+                <div class="list-group">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Chairperson</strong><br> Avis Mantilla
+                        </div>
+                        <span class="badge bg-primary"><i class="bi bi-telephone-fill me-1"></i>0912-345-6789</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Secretary</strong><br> Joanna Amper
+                        </div>
+                        <span class="badge bg-primary"><i class="bi bi-telephone-fill me-1"></i>0917-654-3210</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Treasurer</strong><br> Jenny Marie Sendrijas
+                        </div>
+                        <span class=" badge bg-primary"><i class="bi bi-telephone-fill me-1"></i>0908-123-4567</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>SK Member</strong><br> Keith Ryzza Cadelina
+                        </div>
+                        <span class="badge bg-primary"><i class="bi bi-telephone-fill me-1"></i>0960-221-3979</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

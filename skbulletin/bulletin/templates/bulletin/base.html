@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Barangay Cayawan SK Bulletin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  
+
+  <style>
+    body {
+      padding-top: 75px; /* space for fixed navbar */
+      background: #f8f9fa;
+    }
+
+    /* Navbar Gradient Background */
+    .navbar.bg-primary {
+      background: linear-gradient(135deg, #eedbf1 0%, #ce93d8 50%, #f48fb1 100%);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    /* Brand Styling */
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: #7936a3 !important;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .navbar-brand i {
+      font-size: 1.8rem;
+    }
+    .navbar-brand:hover {
+      color: #ffd54f !important;
+      text-shadow: 0 0 8px #ffd54f;
+      text-decoration: none;
+    }
+
+    /* Nav links styling */
+    .navbar-nav .nav-link {
+      color: #7936a3;
+      font-weight: 500;
+      font-size: 1.05rem;
+      margin-left: 1.25rem;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: #ffd54f;
+    }
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #ffd54f;
+      transition: width 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Logout button */
+    .btn-link.nav-link {
+      color: #dbe9ff;
+      font-weight: 500;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .btn-link.nav-link:hover {
+      color: #ffd54f;
+      text-decoration: none;
+    }
+
+    /* Navbar toggler button */
+    .navbar-toggler {
+      border: none;
+      outline: none;
+      filter: drop-shadow(0 0 1px rgba(255, 213, 79, 0.8));
+    }
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='%23ffd54f' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top px-4 shadow-lg">
+  <a class="navbar-brand" href="{% url 'home' %}">
+    <i class="bi bi-house-fill"></i> SK Bulletin
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto align-items-lg-center">
+      <li class="nav-item"><a class="nav-link" href="{% url 'announcements' %}">Announcements</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'events' %}">Events</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'alerts' %}">Alerts</a></li>
+
+        {% if not user.is_staff %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact-us' %}">Contact</a></li>
+        {% endif %}
+
+      {% if user.is_staff %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'feedback' %}">Feedback</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      {% endif %}
+      {% if user.is_authenticated %}
+        <li class="nav-item">
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-link">Logout</button>
+          </form>
+        </li>
+      {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

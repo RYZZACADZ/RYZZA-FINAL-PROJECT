@@ -1,0 +1,1 @@
+web: cd skbulletin && gunicorn skbulletin.wsgi:application --log-file - 

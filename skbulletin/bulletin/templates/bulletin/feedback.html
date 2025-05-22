@@ -1,0 +1,106 @@
+{% extends 'bulletin/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 50%, #f48fb1 100%);
+        min-height: 100vh;
+    }
+    .glass-container {
+        max-width: 700px;
+        margin: 4rem auto;
+        padding: 2.5rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .glass-container h1, .glass-container h3 {
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    .list-group-item {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .avatar {
+        background: #7936a3;
+        color: #ffffff;
+    }
+
+    .text-primary {
+        color: #7936a3 !important;
+    }
+    .text-secondaryy {
+        color: #e642b4 !important;
+    }
+
+    .badge.bg-primary {
+        background-color: #7936a3 !important;
+        color: #ffffff;
+    }
+
+    .text-muted {
+        color: #ddd !important;
+    }
+
+    @media (max-width: 768px) {
+        .glass-container {
+            padding: 1.5rem;
+            margin: 2rem 1rem;
+        }
+    }
+</style>
+
+<div class="glass-container animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-primary mb-0">Feedback</h1>
+        {% if feedbacks %}
+            <span class="badge bg-primary fs-6 py-2 px-3 shadow-sm" aria-live="polite">{{ feedbacks|length }} Submitted</span>
+        {% endif %}
+    </div>
+
+    {% if feedbacks %}
+        <h3 class="text-secondaryy fw-semibold mb-4">Recent Feedbacks</h3>
+        <div class="list-group">
+            {% for fb in feedbacks %}
+                <div class="list-group-item list-group-item-action mb-3 rounded shadow-sm d-flex gap-3 align-items-start"
+                     style="cursor: default;"
+                     tabindex="0"
+                     aria-label="Feedback from {{ fb.name }}">
+                    <div class="avatar rounded-circle d-flex justify-content-center align-items-center fw-bold"
+                         style="width: 48px; height: 48px; flex-shrink: 0; font-size: 1.25rem;">
+                        {{ fb.name|slice:":1"|upper }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 text-primary fw-bold">{{ fb.name }}</h6>
+                        <p class="mb-1" style="white-space: pre-wrap;">{{ fb.message|linebreaksbr }}</p>
+                        {% if fb.created_at %}
+                            <small class="text-muted fst-italic">{{ fb.created_at|date:"M d, Y • h:mm a" }}</small>
+                        {% endif %}
+
+                        {% if request.user.is_staff %}
+                            <div class="mt-2">
+                                <a href="{% url 'edit_feedback' fb.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                                <a href="{% url 'delete_feedback' fb.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted fst-italic mt-4">No feedback submitted yet.</p>
+    {% endif %}
+</div>
+
+
+<!-- Animate.css CDN (if not already included) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}

@@ -1,0 +1,11 @@
+<h2>Are you sure you want to delete?</h2>
+<p>{{ object }}</p>
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit">Confirm Delete</button>
+</form>
+<a href="{% url 'announcements' %}">Cancel</a>
+<a href="{% url 'events' %}">Cancel</a>
+<a href="{% url 'alerts' %}">Cancel</a>
+<a href="{% url 'feedback' %}">Cancel</a>
+

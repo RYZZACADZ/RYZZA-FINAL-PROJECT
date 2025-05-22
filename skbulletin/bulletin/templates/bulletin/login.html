@@ -1,0 +1,100 @@
+{% extends 'bulletin/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 50%, #f48fb1 100%);
+        min-height: 100vh;
+    }
+
+
+    .admin-login-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        color: #fff;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .admin-login-card:hover {
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    .admin-title {
+        font-weight: 700;
+        font-size: 2rem;
+        color: #6a1b9a;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 0.6rem 1rem;
+        background-color: rgba(255, 255, 255, 0.85);
+        color: #333;
+        border: none;
+    }
+
+    .form-control:focus {
+        border: 2px solid #ba68c8;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        background-color: #6a1b9a;
+        border: none;
+        border-radius: 12px;
+        padding: 0.6rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #4a148c;
+    }
+
+    .admin-badge {
+        font-size: 0.85rem;
+        background-color: #ba68c8;
+        color: #fff;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    label {
+        color: #880a77;
+    }
+
+    .text-danger {
+        color: #ff8a80 !important;
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="admin-login-card w-100" style="max-width: 420px;">
+        <div class="text-center mb-4">
+            <h2 class="admin-title">Admin Login</h2>
+            <span class="admin-badge">Authorized Personnel Only</span>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'bulletin/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-purple border-bottom border-3 border-purple pb-2 fw-semibold fs-2 d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill text-pink"></i> Emergency Alerts
+    </h2>
+
+    {% if alerts %}
+        <div class="row g-4">
+            {% for alert in alerts %}
+                <div class="col-md-6 animate__animated animate__fadeInUp">
+                    <div class="card border-purple shadow-lg h-100 bg-white bg-opacity-75 rounded-4">
+                        {% if alert.image %}
+                            <img src="{{ alert.image.url }}" class="card-img-top rounded-top" alt="Emergency Image" style="object-fit: cover; max-height: 220px;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-purple d-flex align-items-center gap-2">
+                                <i class="bi bi-broadcast-pin"></i> Emergency Alert
+                            </h5>
+                            <p class="card-text text-dark-emphasis" style="white-space: pre-line; font-size: 1.05rem;">{{ alert.message }}</p>
+
+                            {% if request.user.is_staff %}
+                                <div class="mt-3 d-flex gap-2">
+                                    <a href="{% url 'edit_alert' alert.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                                    <a href="{% url 'delete_alert' alert.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 text-muted small fst-italic d-flex justify-content-end align-items-center gap-1">
+                            <i class="bi bi-clock text-pink"></i> {{ alert.posted_at|date:"M d, Y h:i A" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert d-flex align-items-center justify-content-center gap-3 fs-5 bg-white bg-opacity-75 border-purple text-purple fw-semibold shadow-sm" role="alert">
+            <i class="bi bi-info-circle-fill fs-3 text-pink"></i>
+            <span>No emergency alerts at the moment.</span>
+        </div>
+    {% endif %}
+</div>
+<style>
+body {
+    background: linear-gradient(135deg, #f3e5f5 0%, #ce93d8 50%, #f48fb1 100%);
+    min-height: 100vh;
+}
+
+/* Custom theme colors */
+.text-purple {
+    color: #6a1b9a !important;
+}
+.border-purple {
+    border-color: #6a1b9a !important;
+}
+.text-pink {
+    color: #ad1457 !important;
+}
+.bg-white.bg-opacity-75 {
+    background-color: rgba(255, 255, 255, 0.75) !important;
+}
+.text-dark-emphasis {
+    color: #4a4a4a !important;
+}
+</style>
+
+<!-- Animate.css CDN for subtle fade-in animations -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+/>
+{% endblock %}
