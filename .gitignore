@@ -1,40 +1,103 @@
-# Python
-*.py[cod]
-__pycache__/
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-eggs/
-parts/
-bin/
-var/
-sdist/
-develop-eggs/
-.installed.cfg
-lib/
-lib64/
-venv/
-skbulletin_env/
-
 # Django
 *.log
 *.pot
 *.pyc
-db.sqlite3
-media/
-static/
+__pycache__/
 local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # VS Code
 .vscode/
+*.code-workspace
 
-# Environment variables
-.env
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
 
-# macOS
+# Project specific
+skbulletin/media/
+skbulletin/static/
+skbulletin/data/
+skbulletin/staticfiles/
+*.sqlite3
+
+# Backup files
+*.bak
+*.swp
+*~
+
+# System Files
 .DS_Store
+Thumbs.db
+desktop.ini
 
-# Windows
-Thumbs.db 
+# Coverage and testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development settings
+local_settings.py
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database backups
+*.dump
+*.sql
+*.sqlite 

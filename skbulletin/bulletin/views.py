@@ -215,4 +215,10 @@ def delete_feedback(request, id):
         return redirect('home')
     feedback = get_object_or_404(Feedback, id=id)
     feedback.delete()
-    return redirect('feedback') 
+    return redirect('feedback')
+
+def handler404(request, exception):
+    return render(request, 'bulletin/404.html', status=404)
+
+def handler500(request):
+    return render(request, 'bulletin/500.html', status=500) 

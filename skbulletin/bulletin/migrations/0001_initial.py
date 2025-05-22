@@ -18,26 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
                 ('content', models.TextField()),
+                ('image', models.ImageField(blank=True, null=True, upload_to='announcement_images/')),
                 ('date_posted', models.DateTimeField(auto_now_add=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Contact',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('official_name', models.CharField(max_length=100)),
-                ('position', models.CharField(max_length=100)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('phone', models.CharField(blank=True, max_length=20, null=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='EmergencyAlert',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.TextField()),
-                ('is_active', models.BooleanField(default=True)),
-                ('posted_at', models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
@@ -46,8 +28,24 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
                 ('description', models.TextField()),
-                ('date_posted', models.DateTimeField()),
                 ('location', models.CharField(max_length=200)),
+                ('image', models.ImageField(blank=True, null=True, upload_to='event_images/')),
+                ('category', models.CharField(blank=True, max_length=100)),
+                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('ONGOING', 'Ongoing'), ('COMPLETED', 'Completed'), ('CANCELLED', 'Cancelled')], default='PENDING', max_length=20)),
+                ('date_posted', models.DateTimeField(default=django.utils.timezone.now)),
+                ('date', models.DateField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='EmergencyAlert',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('description', models.TextField()),
+                ('message', models.TextField()),
+                ('is_active', models.BooleanField(default=True)),
+                ('title', models.CharField(max_length=200)),
+                ('date_created', models.DateTimeField(auto_now_add=True)),
+                ('image', models.ImageField(blank=True, null=True, upload_to='alert_images/')),
             ],
         ),
         migrations.CreateModel(
@@ -58,6 +56,16 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254)),
                 ('message', models.TextField()),
                 ('submitted_at', models.DateTimeField(default=django.utils.timezone.now)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Contact',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('official_name', models.CharField(max_length=100)),
+                ('position', models.CharField(max_length=100)),
+                ('email', models.EmailField(blank=True, max_length=254, null=True)),
+                ('phone', models.CharField(blank=True, max_length=20, null=True)),
             ],
         ),
     ]

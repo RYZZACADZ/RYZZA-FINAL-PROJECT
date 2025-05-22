@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -14,7 +15,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-change-th
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']  # Update this with your Render domain
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.onrender.com',  # Allows all subdomains on render.com
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -72,12 +77,26 @@ WSGI_APPLICATION = 'skbulletin.wsgi.application'
 data_dir = BASE_DIR / 'data'
 data_dir.mkdir(exist_ok=True)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': data_dir / 'db.sqlite3',
+# Database configuration
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': data_dir / 'db.sqlite3',
+        }
     }
-}
+else:
+    # Use SQLite for production (since you're not using PostgreSQL on Render)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': data_dir / 'db.sqlite3',
+        }
+    }
+
+# Ensure the database directory exists and has proper permissions
+data_dir.mkdir(parents=True, exist_ok=True)
+os.chmod(data_dir, 0o755)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -104,24 +123,57 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Additional locations of static files
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    BASE_DIR / 'bulletin' / 'static',
 ]
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_ALLOW_ALL_ORIGINS = True
+# Ensure static directories exist
+for static_dir in STATICFILES_DIRS:
+    static_dir.mkdir(parents=True, exist_ok=True)
+    (static_dir / 'css').mkdir(exist_ok=True)
+    (static_dir / 'js').mkdir(exist_ok=True)
+    (static_dir / 'images').mkdir(exist_ok=True)
+    (static_dir / 'fonts').mkdir(exist_ok=True)
 
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Configure WhiteNoise to serve media files in production
+# Ensure media subdirectories exist
+MEDIA_SUBDIRS = [
+    'announcement_images',
+    'event_images',
+    'alert_images',
+]
+
+for subdir in MEDIA_SUBDIRS:
+    (Path(MEDIA_ROOT) / subdir).mkdir(parents=True, exist_ok=True)
+
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+
+# File Upload Settings
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+
 if not DEBUG:
-    WHITENOISE_ROOT = MEDIA_ROOT
+    # Configure WhiteNoise to serve media files in production
+    WHITENOISE_ROOT = STATIC_ROOT
     WHITENOISE_INDEX_FILE = True
+    
+    # Security settings for production
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -134,14 +186,22 @@ LOGOUT_REDIRECT_URL = '/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
             'level': 'DEBUG',
         },
         'file': {
             'class': 'logging.FileHandler',
             'filename': data_dir / 'django.log',
+            'formatter': 'verbose',
             'level': 'DEBUG',
         },
     },
@@ -160,6 +220,11 @@ LOGGING = {
             'level': 'ERROR',
         },
         'django.request': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'bulletin': {  # Add app-specific logger
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
